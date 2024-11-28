@@ -1,11 +1,11 @@
 import type { PropsWithChildren } from 'react';
-import type { MMKV } from 'react-native-mmkv';
 import type {
   FulfilledThemeConfiguration,
   Variant,
 } from '@/theme/types/config';
 import type { ComponentTheme, Theme } from '@/theme/types/theme';
 
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import {
   createContext,
   useCallback,
@@ -34,38 +34,36 @@ import { generateGutters, staticGutterStyles } from '@/theme/gutters';
 import layout from '@/theme/layout';
 import generateConfig from '@/theme/ThemeProvider/generateConfig';
 
+import AsyncStorageKeys from '@/enums/asyncStorage.enum';
+
 type Context = {
   changeTheme: (variant: Variant) => void;
 } & Theme;
 
 export const ThemeContext = createContext<Context | undefined>(undefined);
 
-type Props = PropsWithChildren<{
-  storage: MMKV;
-}>;
+function ThemeProvider({ children = false }: PropsWithChildren) {
+  const { getItem, setItem } = useAsyncStorage(AsyncStorageKeys.Theme);
 
-function ThemeProvider({ children = false, storage }: Props) {
   // Current theme variant
-  const [variant, setVariant] = useState(
-    (storage.getString('theme') as Variant) || 'default',
-  );
+  const [variant, setVariant] = useState<Variant>('default');
 
   // Initialize theme at default if not defined
   useEffect(() => {
-    const appHasThemeDefined = storage.contains('theme');
-    if (!appHasThemeDefined) {
-      storage.set('theme', 'default');
-      setVariant('default');
+    async function initalizeTheme() {
+      let config = await getItem();
+      if (!config) {
+        await setItem('default');
+        setVariant('default');
+      }
     }
-  }, [storage]);
+    initalizeTheme();
+  }, []);
 
-  const changeTheme = useCallback(
-    (nextVariant: Variant) => {
-      setVariant(nextVariant);
-      storage.set('theme', nextVariant);
-    },
-    [storage],
-  );
+  const changeTheme = useCallback(async (nextVariant: Variant) => {
+    setVariant(nextVariant);
+    await setItem(nextVariant);
+  }, []);
 
   // Flatten config with current variant
   const fullConfig = useMemo(() => {

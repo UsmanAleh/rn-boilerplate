@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 import { useI18n, useUser } from '@/hooks';
 
 import { AssetByVariant, IconByVariant, Skeleton } from '@/components/atoms';
 import { SafeScreen } from '@/components/templates';
+
+import { Wait } from '@/helpers/timers';
 
 function Example() {
   const { t } = useTranslation();
@@ -30,9 +32,12 @@ function Example() {
 
   useEffect(() => {
     if (fetchOneUserQuery.isSuccess) {
-      Alert.alert(
-        t('screen_example.hello_user', { name: fetchOneUserQuery.data.name }),
-      );
+      Wait(100).then(() => {
+        // @ts-ignore
+        alert(
+          t('screen_example.hello_user', { name: fetchOneUserQuery.data.name }),
+        );
+      });
     }
   }, [fetchOneUserQuery.isSuccess, fetchOneUserQuery.data, t]);
 
@@ -97,7 +102,10 @@ function Example() {
                 style={[components.buttonCircle, gutters.marginBottom_16]}
                 testID="fetch-user-button"
               >
-                <IconByVariant path={'send'} stroke={colors.purple500} />
+                <AssetByVariant
+                  path={'tom'}
+                  style={{ height: 24, width: 24 }}
+                />
               </TouchableOpacity>
             </Skeleton>
 
@@ -106,7 +114,11 @@ function Example() {
               style={[components.buttonCircle, gutters.marginBottom_16]}
               testID="change-theme-button"
             >
-              <IconByVariant path={'theme'} stroke={colors.purple500} />
+              <AssetByVariant
+                path={'tom'}
+                resizeMode={'contain'}
+                style={{ height: 24, width: 24 }}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -114,7 +126,11 @@ function Example() {
               style={[components.buttonCircle, gutters.marginBottom_16]}
               testID="change-language-button"
             >
-              <IconByVariant path={'language'} stroke={colors.purple500} />
+              <AssetByVariant
+                path={'tom'}
+                resizeMode={'contain'}
+                style={{ height: 24, width: 24 }}
+              />
             </TouchableOpacity>
           </View>
         </View>

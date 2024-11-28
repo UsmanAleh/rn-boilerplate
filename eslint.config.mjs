@@ -46,7 +46,7 @@ export default [
       'no-this-before-super': 2,
       'no-unused-expressions': 2,
       'no-unused-labels': 2,
-      'no-unused-vars': 0,
+      'no-unused-vars': 'warn',
       'no-useless-rename': 2,
       'no-var': 2,
       'no-warning-comments': [2, { terms: ['@nocommit'] }],
@@ -113,7 +113,7 @@ export default [
       'unicorn/prefer-ternary': 2,
       'unicorn/prefer-top-level-await': 0, // not valid on RN for the moment
       'unicorn/text-encoding-identifier-case': 2,
-      'unused-imports/no-unused-imports': 0,
+      'unused-imports/no-unused-imports': 'off',
     },
     settings: {
       perfectionist: {
@@ -147,7 +147,7 @@ export default [
       '@typescript-eslint/no-namespace': 0,
       '@typescript-eslint/no-non-null-assertion': 0,
       '@typescript-eslint/no-this-alias': 0,
-      '@typescript-eslint/no-unused-vars': 0,
+      '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-var-requires': 0,
       'import/no-unresolved': 0, // handled by TypeScript
       'react/prop-types': 0,
