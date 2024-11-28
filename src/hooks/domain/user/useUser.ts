@@ -13,6 +13,7 @@ const useFetchOneQuery = (currentId: User['id']) =>
     enabled: currentId >= 0,
     queryFn: () => UserServices.fetchOne(currentId),
     queryKey: [UserQueryKey.fetchOne, currentId],
+    experimental_prefetchInRender: true,
   });
 
 export const useUser = () => {

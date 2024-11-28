@@ -8,7 +8,7 @@
     "allowImportingTsExtensions": false,
     "module": "esnext",
     "skipLibCheck": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": false
   },
   "include": [
     "__mocks__/**/*",

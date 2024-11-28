@@ -98,6 +98,9 @@ module.exports = {
       template: path.join(__dirname, 'index.html'),
     }),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      process: require.resolve('process/browser'),
+    }),
     new webpack.DefinePlugin({
       __DEV__: JSON.stringify(true),
     }),
