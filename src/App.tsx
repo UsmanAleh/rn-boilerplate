@@ -8,6 +8,11 @@ import ApplicationNavigator from '@/navigation/Application';
 
 import '@/translations';
 
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import store, { persistor } from '@/store';
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {
@@ -22,11 +27,15 @@ export const queryClient = new QueryClient({
 function App() {
   return (
     <GestureHandlerRootView>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <ApplicationNavigator />
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ReduxProvider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider>
+              <ApplicationNavigator />
+            </ThemeProvider>
+          </QueryClientProvider>
+        </PersistGate>
+      </ReduxProvider>
     </GestureHandlerRootView>
   );
 }
