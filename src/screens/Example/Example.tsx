@@ -1,24 +1,19 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
-import { useI18n, useUser } from '@/hooks';
+import { useI18n } from '@/hooks';
 
-import { AssetByVariant, IconByVariant, Skeleton } from '@/components/atoms';
+import { AssetByVariant, Skeleton } from '@/components/atoms';
 import { SafeScreen } from '@/components/templates';
-
-import { Wait } from '@/helpers/timers';
 
 function Example() {
   const { t } = useTranslation();
-  const { useFetchOneQuery } = useUser();
   const { toggleLanguage } = useI18n();
 
   const {
     backgrounds,
     changeTheme,
-    colors,
     components,
     fonts,
     gutters,
@@ -26,30 +21,12 @@ function Example() {
     variant,
   } = useTheme();
 
-  const [currentId, setCurrentId] = useState(-1);
-
-  const fetchOneUserQuery = useFetchOneQuery(currentId);
-
-  useEffect(() => {
-    if (fetchOneUserQuery.isSuccess) {
-      Wait(100).then(() => {
-        // @ts-ignore
-        alert(
-          t('screen_example.hello_user', { name: fetchOneUserQuery.data.name }),
-        );
-      });
-    }
-  }, [fetchOneUserQuery.isSuccess, fetchOneUserQuery.data, t]);
-
   const onChangeTheme = () => {
     changeTheme(variant === 'default' ? 'dark' : 'default');
   };
 
   return (
-    <SafeScreen
-      isError={fetchOneUserQuery.isError}
-      onResetError={fetchOneUserQuery.refetch}
-    >
+    <SafeScreen isError={false} onResetError={() => {}}>
       <ScrollView>
         <View
           style={[
@@ -93,12 +70,12 @@ function Example() {
           >
             <Skeleton
               height={64}
-              loading={fetchOneUserQuery.isLoading}
+              loading={false}
               style={{ borderRadius: components.buttonCircle.borderRadius }}
               width={64}
             >
               <TouchableOpacity
-                onPress={() => setCurrentId(Math.ceil(Math.random() * 9 + 1))}
+                onPress={() => {}}
                 style={[components.buttonCircle, gutters.marginBottom_16]}
                 testID="fetch-user-button"
               >
