@@ -13,7 +13,11 @@ if (typeof window !== 'undefined' && window.console) {
    */
   console.warn = (...args) => {
     // Define patterns of warnings to ignore
-    const ignorePatterns = [/.*deprecated.*/, /.*Source map error.*/];
+    const ignorePatterns = [
+      /.*deprecated.*/,
+      /.*Source map error.*/,
+      /.*HMR.*/,
+    ];
 
     // Check if any ignore pattern matches the warning message
     if (ignorePatterns.some((pattern) => pattern.test(args[0]))) {
