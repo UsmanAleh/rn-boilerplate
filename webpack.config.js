@@ -2,7 +2,7 @@ const path = require('node:path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const appDirectory = path.resolve(__dirname);
-const { presets, plugins } = require(`${appDirectory}/babel.config.js`);
+const { plugins, presets } = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
   // 'react-native-gesture-handler',
@@ -22,8 +22,8 @@ const babelLoaderConfiguration = {
     loader: 'babel-loader',
     options: {
       cacheDirectory: true,
-      presets,
       plugins,
+      presets,
     },
   },
 };
@@ -48,8 +48,8 @@ const imageLoaderConfiguration = {
 };
 
 const tsLoaderConfiguration = {
-  test: /\.(ts)x?$/,
   exclude: /node_modules|\.d\.ts$/, // this line as well
+  test: /\.(ts)x?$/,
   use: {
     loader: 'ts-loader',
     options: {
@@ -64,12 +64,43 @@ module.exports = {
   entry: {
     app: path.join(__dirname, 'index.web.js'),
   },
+  ignoreWarnings: [
+    {
+      // Ignore warnings that contain the specific message
+      message: /export 'AuthSessionOpenOptions' was not found/,
+    },
+  ],
+  module: {
+    rules: [
+      babelLoaderConfiguration,
+      imageLoaderConfiguration,
+      svgLoaderConfiguration,
+      tsLoaderConfiguration,
+    ],
+  },
   output: {
+    filename: 'rnw.bundle.js',
     path: path.resolve(appDirectory, 'dist'),
     publicPath: '/',
-    filename: 'rnw.bundle.js',
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'index.html'),
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'], // Add Buffer polyfill
+      process: require.resolve('process/browser'),
+    }),
+    new webpack.DefinePlugin({
+      __DEV__: JSON.stringify(true),
+    }),
+  ],
   resolve: {
+    alias: {
+      'react-native-encrypted-storage': path.resolve(__dirname, '/src/helpers/mockEncryptedStorage.js'),
+      'react-native$': 'react-native-web',
+    },
     extensions: [
       '.web.tsx',
       '.web.ts',
@@ -81,28 +112,9 @@ module.exports = {
       '.jsx',
       '.json',
     ],
-    alias: {
-      'react-native$': 'react-native-web',
+    fallback: {
+      buffer: require.resolve('buffer'),
     },
+    fullySpecified: false,
   },
-  module: {
-    rules: [
-      babelLoaderConfiguration,
-      imageLoaderConfiguration,
-      svgLoaderConfiguration,
-      tsLoaderConfiguration,
-    ],
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'index.html'),
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.ProvidePlugin({
-      process: require.resolve('process/browser'),
-    }),
-    new webpack.DefinePlugin({
-      __DEV__: JSON.stringify(true),
-    }),
-  ],
 };
