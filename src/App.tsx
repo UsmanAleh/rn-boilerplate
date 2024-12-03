@@ -1,14 +1,11 @@
 import 'react-native-gesture-handler';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import { ThemeProvider } from '@/theme';
 import ApplicationNavigator from '@/navigation/Application';
-
-import '@/translations';
-
-import { Provider as ReduxProvider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 
 import store, { persistor } from '@/store';
 
