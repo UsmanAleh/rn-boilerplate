@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { useTheme } from '@/theme';
 import getAssetsContext from '@/theme/assets/getAssetsContext';
 
+import AppLogger from '@/helpers/AppLogger';
+
 type Props = {
   extension?: string;
   path: string;
@@ -36,7 +38,7 @@ function AssetByVariant({ extension = 'png', path, ...props }: Props) {
         setImage(fetchedModule);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(
+        AppLogger.warn(
           `Couldn't load the image: ${path}.${extension} for the variant ${variant}, Fallback to default`,
           error,
         );
@@ -44,7 +46,7 @@ function AssetByVariant({ extension = 'png', path, ...props }: Props) {
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`Couldn't load the image: ${path}`, error);
+      AppLogger.error(`Couldn't load the image: ${path}`, error);
     }
   }, [variant, extension, path]);
 

@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { useTheme } from '@/theme';
 import getAssetsContext from '@/theme/assets/getAssetsContext';
 
+import AppLogger from '@/helpers/AppLogger';
+
 type Props = {
   path: string;
 } & SvgProps;
@@ -37,7 +39,7 @@ function IconByVariant({ height = 24, path, width = 24, ...props }: Props) {
         setIcon(fetchedModule.default);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(
+        AppLogger.warn(
           `Couldn't load the icon: ${path}.${EXTENSION} for the variant ${variant}, Fallback to default`,
           error,
         );
@@ -45,7 +47,7 @@ function IconByVariant({ height = 24, path, width = 24, ...props }: Props) {
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`Couldn't load the icon: ${path}.${EXTENSION}`, error);
+      AppLogger.error(`Couldn't load the icon: ${path}.${EXTENSION}`, error);
     }
   }, [variant, path]);
 

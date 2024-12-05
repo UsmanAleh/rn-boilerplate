@@ -10,7 +10,6 @@ module.exports = {
     '^@/theme(.*)$',
     '^@/hooks(.*)$',
     '^@/navigation(.*)$',
-    '^@/translations(.*)$',
     '', // empty line
     '^@/components/atoms(.*)$',
     '^@/components/molecules(.*)$',

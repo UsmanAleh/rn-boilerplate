@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import {
   Button,
@@ -18,7 +19,6 @@ import Web3Auth, {
   ChainNamespace,
   LOGIN_PROVIDER,
   WEB3AUTH_NETWORK,
-  OPENLOGIN_NETWORK
 } from '@web3auth/react-native-sdk';
 import { ethers } from 'ethers';
 import EncryptedStorage from 'react-native-encrypted-storage';
