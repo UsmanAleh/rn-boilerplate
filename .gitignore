@@ -57,6 +57,8 @@ yarn-error.log
 
 # Env File
 .env
+.env.*
+!.env.example
 
 # Ruby / CocoaPods
 **/Pods/

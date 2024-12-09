@@ -5,7 +5,9 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "web": "webpack serve --mode=development --config webpack.config.js --open",
+    "web:development": "NODE_ENV=development webpack serve --config webpack.config.js --open",
+    "web:staging": "NODE_ENV=staging webpack serve --config webpack.config.js --open",
+    "web:production": "NODE_ENV=production webpack serve --config webpack.config.js --open",
     "start": "react-native start",
     "clean": "rm -rf node_modules dist build && npm cache clean --force",
     "typechain:build": "typechain --target=ethers-v6 --out-dir src/contracts/typechain src/contracts/abis/*.json",
@@ -73,6 +75,7 @@
     "babel-plugin-react-native-web": "^0.19.13",
     "babel-plugin-root-import": "^6.6.0",
     "dotenv": "^16.3.1",
+    "dotenv-webpack": "^8.1.0",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.8.3",
@@ -94,6 +97,7 @@
     "typescript-eslint": "^7.1.1",
     "url-loader": "^4.1.1",
     "webpack": "^5.96.1",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0"
   },
