@@ -21,7 +21,7 @@ function Example() {
   };
 
   return (
-    <SafeScreen isError={false} onResetError={() => {}}>
+    <SafeScreen isError={false} onResetError={() => { }}>
       <ScrollView>
         <View
           style={[
@@ -73,7 +73,7 @@ function Example() {
               width={64}
             >
               <TouchableOpacity
-                onPress={() => {}}
+                onPress={() => { }}
                 style={[components.buttonCircle, gutters.marginBottom_16]}
                 testID="fetch-user-button"
               >

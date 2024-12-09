@@ -12,6 +12,7 @@ module.exports = {
       },
     ],
     'inline-dotenv',
+    '@babel/plugin-transform-export-namespace-from',
     'react-native-reanimated/plugin', // needs to be last
   ],
   presets: ['module:@react-native/babel-preset'],

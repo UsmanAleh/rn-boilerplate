@@ -1,3 +1,8 @@
+// Importing polyfill for generating random values in React Native
+import 'react-native-get-random-values';
+// Importing Ethereum shims for compatibility with ethers.js
+import '@ethersproject/shims';
+
 /**
  * Override console.warn to ignore specific warning patterns.
  * Only applies in a browser environment where window.console is available.

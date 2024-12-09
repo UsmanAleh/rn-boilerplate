@@ -81,3 +81,6 @@ yarn-error.log
 
 # vscode
 .vscode/*
+
+# typechain
+src/contracts/typechain
