@@ -3,6 +3,7 @@ import { PersistConfig, persistReducer, persistStore } from 'redux-persist';
 import { encryptTransform } from 'redux-persist-transform-encrypt';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
+import privateKeyReducer from './PrivateKey/PrivateKey.slice';
 import todosReducer from './Todos/Todo.slice';
 
 /**
@@ -17,6 +18,7 @@ const encryptor = encryptTransform({
  */
 const rootReducer = combineReducers({
   todos: todosReducer,
+  privateKey: privateKeyReducer,
 });
 
 /**
