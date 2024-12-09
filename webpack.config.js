@@ -87,7 +87,7 @@ const customEnv = {
 module.exports = {
   mode: mode,
   performance: {
-    hints: 'warning', // Keep it to stay informed
+    hints: environment === 'development' ? false : 'warning', // Warnings enabled for staging and production
     maxEntrypointSize: 3000000, // 3 MB
     maxAssetSize: 2000000, // 2 MB
   },
