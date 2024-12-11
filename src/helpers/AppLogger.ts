@@ -75,10 +75,10 @@ export default class AppLogger {
       '#EF5250',
       'API Request Error',
       {
-        method,
-        url,
-        status,
         message,
+        method,
+        status,
+        url,
       },
       ...optionalParams,
     );

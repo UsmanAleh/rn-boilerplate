@@ -12,10 +12,10 @@
  */
 
 enum RequestStatus {
-  Pending = 'pending',
-  Success = 'success',
   Error = 'error',
   Idle = 'idle',
+  Pending = 'pending',
+  Success = 'success',
 }
 
 export default RequestStatus;
