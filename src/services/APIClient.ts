@@ -2,6 +2,7 @@ import ky, { HTTPError, Input, KyInstance, Options } from 'ky';
 
 import { ApiEndpointKeys, ApiEndpoints } from '@/constants/api.constants';
 import AppLogger from '@/helpers/AppLogger';
+import CustomError from '@/helpers/CustomError';
 
 /**
  * APIClient provides methods to interact with a REST API.
@@ -172,5 +173,5 @@ const createAPIError = (error: any) => {
   } else {
     AppLogger.error(error);
   }
-  return new Error(error.message ?? error);
+  return new CustomError(error.message ?? error);
 };

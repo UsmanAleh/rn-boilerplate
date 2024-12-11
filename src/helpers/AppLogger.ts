@@ -22,38 +22,38 @@ export default class AppLogger {
 
   /**
    * Logs a general message with a predefined color.
-   * @param message - The message to log.
+   * @param label - The label of the log.
    * @param optionalParams - Additional parameters to log.
    */
-  static log(message: string, ...optionalParams: any[]) {
-    this.styledLog('#1DBC60', 'Info:', message, ...optionalParams);
+  static log(label: string, ...optionalParams: any[]) {
+    this.styledLog('#1DBC60', label, ...optionalParams);
   }
 
   /**
    * Logs an informational message.
-   * @param message - The message to log.
+   * @param label - The label of the log.
    * @param optionalParams - Additional parameters to log.
    */
-  static info(message: string, ...optionalParams: any[]) {
-    this.styledLog('#1E90FF', 'Info:', message, ...optionalParams);
+  static info(label: string, ...optionalParams: any[]) {
+    this.styledLog('#1E90FF', label, ...optionalParams);
   }
 
   /**
    * Logs a warning message.
-   * @param message - The message to log.
+   * @param label - The label of the log.
    * @param optionalParams - Additional parameters to log.
    */
-  static warn(message: string, ...optionalParams: any[]) {
-    this.styledLog('#FF8C00', 'Warning:', message, ...optionalParams);
+  static warn(label: string, ...optionalParams: any[]) {
+    this.styledLog('#FF8C00', label, ...optionalParams);
   }
 
   /**
    * Logs an error message.
-   * @param message - The message to log.
+   * @param label - The label of the log.
    * @param optionalParams - Additional parameters to log.
    */
-  static error(message: string, ...optionalParams: any[]) {
-    this.styledLog('#EF5250', 'Error:', message, ...optionalParams);
+  static error(label: string, ...optionalParams: any[]) {
+    this.styledLog('#EF5250', label, ...optionalParams);
   }
 
   /**
@@ -86,12 +86,12 @@ export default class AppLogger {
 
   /**
    * Logs a debug message if the environment is set to development.
-   * @param message - The message to log.
+   * @param label - The label of the log.
    * @param optionalParams - Additional parameters to log.
    */
-  static debug(message: string, ...optionalParams: any[]) {
+  static debug(label: string, ...optionalParams: any[]) {
     if (process.env.NODE_ENV === 'development') {
-      this.styledLog('#6A5ACD', 'Debug:', message, ...optionalParams);
+      this.styledLog('#6A5ACD', label, ...optionalParams);
     }
   }
 }
