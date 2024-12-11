@@ -2,7 +2,7 @@ const path = require('node:path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const appDirectory = path.resolve(__dirname);
-const { presets, plugins } = require(`${appDirectory}/babel.config.js`);
+const { plugins, presets } = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
   // 'react-native-gesture-handler',
@@ -25,8 +25,8 @@ const babelLoaderConfiguration = {
     loader: 'babel-loader',
     options: {
       cacheDirectory: true,
-      presets,
       plugins,
+      presets,
     },
   },
 };
@@ -51,8 +51,8 @@ const imageLoaderConfiguration = {
 };
 
 const tsLoaderConfiguration = {
-  test: /\.(ts)x?$/,
   exclude: /node_modules|\.d\.ts$/, // this line as well
+  test: /\.(ts)x?$/,
   use: {
     loader: 'ts-loader',
     options: {
@@ -85,38 +85,11 @@ const customEnv = {
 };
 
 module.exports = {
-  mode: mode,
   devtool: environment === 'development' ? 'source-map' : false,
-  performance: {
-    hints: environment === 'development' ? false : 'warning', // Warnings enabled for staging and production
-    maxEntrypointSize: 3000000, // 3 MB
-    maxAssetSize: 2000000, // 2 MB
-  },
   entry: {
     app: path.join(__dirname, 'index.web.js'),
   },
-  output: {
-    path: path.resolve(appDirectory, 'dist'),
-    publicPath: '/',
-    filename: 'rnw.bundle.js',
-  },
-  resolve: {
-    extensions: [
-      '.web.tsx',
-      '.web.ts',
-      '.tsx',
-      '.ts',
-      '.web.js',
-      '.web.jsx',
-      '.js',
-      '.jsx',
-      '.json',
-    ],
-    alias: {
-      'react-native$': 'react-native-web',
-      'react-native-linear-gradient': 'react-native-web-linear-gradient',
-    },
-  },
+  mode,
   module: {
     rules: [
       babelLoaderConfiguration,
@@ -124,6 +97,16 @@ module.exports = {
       svgLoaderConfiguration,
       tsLoaderConfiguration,
     ],
+  },
+  output: {
+    filename: 'rnw.bundle.js',
+    path: path.resolve(appDirectory, 'dist'),
+    publicPath: '/',
+  },
+  performance: {
+    hints: environment === 'development' ? false : 'warning', // Warnings enabled for staging and production
+    maxAssetSize: 2_000_000, // 2 MB
+    maxEntrypointSize: 3_000_000, // 3 MB
   },
   plugins: [
     /**
@@ -146,4 +129,21 @@ module.exports = {
       path: path.resolve(__dirname, envFile),
     }),
   ],
+  resolve: {
+    alias: {
+      'react-native-linear-gradient': 'react-native-web-linear-gradient',
+      'react-native$': 'react-native-web',
+    },
+    extensions: [
+      '.web.tsx',
+      '.web.ts',
+      '.tsx',
+      '.ts',
+      '.web.js',
+      '.web.jsx',
+      '.js',
+      '.jsx',
+      '.json',
+    ],
+  },
 };
