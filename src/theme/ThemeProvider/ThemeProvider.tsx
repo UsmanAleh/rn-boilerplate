@@ -34,7 +34,7 @@ import { generateGutters, staticGutterStyles } from '@/theme/gutters';
 import layout from '@/theme/layout';
 import generateConfig from '@/theme/ThemeProvider/generateConfig';
 
-import AsyncStorageKeys from '@/enums/asyncStorage.enum';
+import AsyncStorageKeys from '@/enums/AsyncStorage.enum';
 
 type Context = {
   changeTheme: (variant: Variant) => void;

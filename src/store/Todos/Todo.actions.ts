@@ -8,7 +8,7 @@
  */
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 
-import RequestStatus from '@/enums/requestStatus.enum';
+import RequestStatus from '@/enums/RequestStatus.enum';
 import AppLogger from '@/helpers/AppLogger';
 import { APIClient } from '@/services/APIClient';
 

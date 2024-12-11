@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, SerializedError } from '@reduxjs/toolkit';
 
-import RequestStatus from '@/enums/requestStatus.enum';
+import RequestStatus from '@/enums/RequestStatus.enum';
 
 import { TodoActions } from './Todo.actions';
 
