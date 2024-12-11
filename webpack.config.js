@@ -86,6 +86,7 @@ const customEnv = {
 
 module.exports = {
   mode: mode,
+  devtool: environment === 'development' ? 'source-map' : false,
   performance: {
     hints: environment === 'development' ? false : 'warning', // Warnings enabled for staging and production
     maxEntrypointSize: 3000000, // 3 MB
