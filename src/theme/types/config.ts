@@ -9,6 +9,11 @@ export type ThemeState = {
   variant: Variant;
 };
 
+export interface BrandingConfiguration {
+  logo?: string | undefined;
+  textLogo?: string | undefined;
+}
+
 export type FulfilledThemeConfiguration = {
   readonly backgrounds: Record<string, string>;
   borders: {
@@ -16,6 +21,7 @@ export type FulfilledThemeConfiguration = {
     radius: readonly number[];
     widths: readonly number[];
   };
+  branding: BrandingConfiguration;
   readonly colors: Record<string, string>;
   fonts: {
     readonly colors: Record<string, string>;
@@ -30,6 +36,7 @@ export type VariantThemeConfiguration = {
   borders: {
     readonly colors: FulfilledThemeConfiguration['borders']['colors'];
   };
+  branding: FulfilledThemeConfiguration['branding'];
   readonly colors: FulfilledThemeConfiguration['colors'];
   fonts: {
     readonly colors: FulfilledThemeConfiguration['fonts']['colors'];

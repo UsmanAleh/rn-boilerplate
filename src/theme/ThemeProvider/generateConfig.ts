@@ -27,9 +27,14 @@ function hasProperty<Config, KeyPath extends string>(
   return true;
 }
 
-export default (variant: Variant) => {
+export default (variant: Variant, mergedTheme?: FulfilledThemeConfiguration) => {
   const { variants, ...defaultConfig } = config;
-  const variantConfig = variant !== 'default' ? variants[variant] : null;
+  const variantConfig =
+    variant === 'custom'
+      ? mergedTheme
+      : variant === 'dark'
+        ? variants[variant]
+        : defaultConfig;
 
   const fontColors = {
     ...defaultConfig.fonts.colors,
@@ -62,6 +67,13 @@ export default (variant: Variant) => {
       : {}),
   };
 
+  const branding = {
+    ...defaultConfig.branding,
+    ...(variantConfig && hasProperty(variantConfig, 'branding')
+      ? variantConfig.branding
+      : {}),
+  };
+
   return {
     backgrounds: backgroundColors,
     borders: {
@@ -69,6 +81,7 @@ export default (variant: Variant) => {
       radius: defaultConfig.borders.radius,
       widths: defaultConfig.borders.widths,
     },
+    branding,
     colors,
     fonts: {
       colors: fontColors,
