@@ -11,7 +11,7 @@ import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import RequestStatus from '@/enums/RequestStatus.enum';
 import AppLogger from '@/helpers/AppLogger';
 import CustomError from '@/helpers/CustomError';
-import { APIClient } from '@/services/APIClient';
+import { ApiClient } from '@/services/Api/ApiClient';
 
 import { ITodoState } from './Todo.slice';
 
@@ -22,7 +22,7 @@ export const fetchTodos = createAsyncThunk(
   'todos/fetchTodos',
   async (payload, { getState, dispatch }): Promise<any> => {
     try {
-      const client = new APIClient();
+      const client = new ApiClient();
 
       const response = await client.get('todos');
 
