@@ -1,3 +1,5 @@
+import { CustomChainConfig } from '@web3auth/base';
+
 import {
   DevChainConfig,
   DevChainID,
@@ -32,14 +34,8 @@ type ContractList = Record<IContracts, IAddress>;
  * The configuration for a single chain.
  */
 export interface IChainConfig {
-  readonly name: string;
   readonly contract: ContractList;
-  readonly metadata: {
-    readonly symbol: string;
-    readonly chainId: string | number;
-    readonly rpcUrl: string;
-    readonly explorerUrl: string;
-  };
+  readonly metadata: CustomChainConfig;
 }
 
 /**
