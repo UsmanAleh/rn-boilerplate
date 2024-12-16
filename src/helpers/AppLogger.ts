@@ -91,7 +91,7 @@ export default class AppLogger {
    */
   static debug(label: string, ...optionalParams: any[]) {
     if (process.env.NODE_ENV === 'development') {
-      this.styledLog('#6A5ACD', label, ...optionalParams);
+      this.styledLog('#6A5ACD', 'Debug: ' + label, ...optionalParams);
     }
   }
 }

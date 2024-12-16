@@ -3,6 +3,18 @@ import 'react-native-get-random-values';
 // Importing Ethereum shims for compatibility with ethers.js
 import '@ethersproject/shims';
 
+// Importing the `Buffer` class for compatibility with Web3Auth
+import { Buffer } from 'buffer';
+
+/**
+ * Check if Buffer is not defined globally, and if not, assign it.
+ * This ensures compatibility with environments that do not have Buffer
+ * available globally by default.
+ */
+if (!global.Buffer) {
+  global.Buffer = Buffer;
+}
+
 /**
  * Override console.warn to ignore specific warning patterns.
  * Only applies in a browser environment where window.console is available.
