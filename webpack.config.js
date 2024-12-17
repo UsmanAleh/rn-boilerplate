@@ -15,6 +15,10 @@ const babelLoaderConfiguration = {
   test: /\.(js|jsx|ts|tsx)$/, // Updated to include .jsx
   // Add every directory that needs to be compiled by Babel during the build.
   include: [
+    // path.resolve(
+    //   appDirectory,
+    //   'node_modules/@react-native/assets-registry/registry',
+    // ),
     path.resolve(__dirname, 'index.web.js'), // Entry to your application
     path.resolve(__dirname, 'src/App.tsx'), // Updated to .jsx
     path.resolve(__dirname, 'src'),
@@ -63,6 +67,15 @@ const tsLoaderConfiguration = {
   },
 };
 
+// const ttfLoaderConfiguration = {
+//   test: /\.ttf$/,
+//   use: [
+//     {
+//       loader: 'url-loader',
+//     },
+//   ],
+// };
+
 const environment = process.env.NODE_ENV || 'development'; // Default to 'development' if not specified
 let envFile = '.env';
 let mode = 'development';
@@ -96,6 +109,14 @@ module.exports = {
       imageLoaderConfiguration,
       svgLoaderConfiguration,
       tsLoaderConfiguration,
+      // ttfLoaderConfiguration,
+      // {
+      //   issuer: {
+      //     and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
+      //   },
+      //   test: /\.svg$/,
+      //   use: ['@svgr/webpack'],
+      // },
     ],
   },
   output: {
@@ -144,6 +165,7 @@ module.exports = {
       '.js',
       '.jsx',
       '.json',
+      // '.svg',
     ],
   },
 };

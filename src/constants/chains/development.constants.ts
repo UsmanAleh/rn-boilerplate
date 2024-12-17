@@ -1,5 +1,5 @@
 import { IContracts } from '@/enums/Contracts.enum';
-import {
+import type {
   ConfigListByChainID,
   ContractListByChainID,
 } from '@/interfaces/chains.interface';
@@ -10,7 +10,7 @@ import {
  * @enum {number}
  */
 enum ChainID {
-  ArbitrumSepolia = 421614,
+  ArbitrumSepolia = 421_614,
   Native = ArbitrumSepolia,
 }
 
@@ -32,14 +32,14 @@ const Addresses: ContractListByChainID<ChainID> = {
  */
 const ChainConfig: ConfigListByChainID<ChainID> = {
   [ChainID.ArbitrumSepolia]: {
-    name: 'Arbitrum Sepolia',
     contract: Addresses[ChainID.ArbitrumSepolia],
     metadata: {
-      symbol: 'ETH',
       chainId: ChainID.ArbitrumSepolia,
-      rpcUrl: 'https://sepolia-rollup.arbitrum.io/rpc',
       explorerUrl: 'https://sepolia.arbiscan.io',
+      rpcUrl: 'https://sepolia-rollup.arbitrum.io/rpc',
+      symbol: 'ETH',
     },
+    name: 'Arbitrum Sepolia',
   },
 };
 

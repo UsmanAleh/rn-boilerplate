@@ -5,7 +5,7 @@ import RequestStatus from '@/enums/RequestStatus.enum';
 import { TodoActions } from './Todo.actions';
 
 /**
- * The type of a todo.
+ * The type of a todo.https://typescript-eslint.io/rules/consistent-type-imports
  * @interface
  * @property {number} id - The id of the todo.
  * @property {string} text - The text of the todo.
