@@ -1,9 +1,16 @@
+import { useEffect } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
+import { useWallet } from '@/hooks/useWallet';
 
 import { AssetByVariant, Skeleton } from '@/components/atoms';
 import { SafeScreen } from '@/components/templates';
+
+import RequestStatus from '@/enums/RequestStatus.enum';
+import AppLogger from '@/helpers/AppLogger';
+import { fetchTodos } from '@/store/Todos/Todo.actions';
+import { useAppDispatch, useAppSelector } from '@/store/utils';
 
 function Example() {
   const {
@@ -18,8 +25,28 @@ function Example() {
     variant,
   } = useTheme();
 
-  const onChangeTheme = () => {
-    changeTheme(variant === 'default' ? 'dark' : 'default');
+  const { connect, disconnect } = useWallet();
+
+  const { allTodos, error, status } = useAppSelector((state) => state.todos);
+
+  useEffect(() => {
+    if (status === RequestStatus.Success) {
+      AppLogger.log('Todos:', allTodos);
+    } else if (status === RequestStatus.Error) {
+      AppLogger.error('Error', error);
+    } else {
+      AppLogger.info('Status', status);
+    }
+  }, [allTodos, status, error]);
+
+  const action1 = () => {
+    // dispatch(fetchTodos());
+    connect();
+  };
+
+  const action2 = () => {
+    // changeTheme(variant === 'default' ? 'dark' : 'default');
+    disconnect();
   };
 
   const onChangeThemeCustom = () => {
@@ -63,7 +90,12 @@ function Example() {
         <View style={[gutters.paddingHorizontal_32, gutters.marginTop_40]}>
           <View style={[gutters.marginTop_40]}>
             <Text
-              style={[fonts.size_40, fonts.gray800, fonts.primaryColor, fonts.bold]}
+              style={[
+                fonts.size_40,
+                fonts.gray800,
+                fonts.primaryColor,
+                fonts.bold,
+              ]}
             >
               {branding?.textLogo}
             </Text>
@@ -71,9 +103,7 @@ function Example() {
               style={[fonts.size_16, fonts.gray200, gutters.marginBottom_40]}
             >
               Do you want to discover some features? Just click on one of the
-              three buttons at the bottom of the screen. The first allows you to
-              call a REST API. The second lets you change the theme color. And
-              the third allows you to change the language.
+              buttons at the bottom of the screen.
             </Text>
           </View>
 
@@ -104,28 +134,28 @@ function Example() {
             </Skeleton>
 
             <TouchableOpacity
-              onPress={onChangeTheme}
-              style={[components.buttonCircle, gutters.marginBottom_16]}
-              testID="change-theme-button"
+              onPress={action1}
+              style={[
+                components.buttonRounded,
+                gutters.marginBottom_16,
+                gutters.padding_12,
+              ]}
+              testID="action-button-1"
             >
-              <AssetByVariant
-                path={'tom'}
-                resizeMode={'contain'}
-                style={{ height: 24, width: 24 }}
-              />
+              <Text>Connect Wallet</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
-              onPress={toggleLanguage}
-              style={[components.buttonCircle, gutters.marginBottom_16]}
-              testID="change-language-button"
+            <TouchableOpacity
+              onPress={action2}
+              style={[
+                components.buttonRounded,
+                gutters.marginBottom_16,
+                gutters.padding_12,
+              ]}
+              testID="action-button-2"
             >
-              <AssetByVariant
-                path={'tom'}
-                resizeMode={'contain'}
-                style={{ height: 24, width: 24 }}
-              />
-            </TouchableOpacity> */}
+              <Text>Disconnect Wallet</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

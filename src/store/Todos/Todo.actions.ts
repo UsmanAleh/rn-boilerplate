@@ -8,9 +8,10 @@
  */
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 
-import RequestStatus from '@/enums/requestStatus.enum';
+import RequestStatus from '@/enums/RequestStatus.enum';
 import AppLogger from '@/helpers/AppLogger';
-import { APIClient } from '@/services/APIClient';
+import CustomError from '@/helpers/CustomError';
+import { ApiClient } from '@/services/Api/ApiClient';
 
 import { ITodoState } from './Todo.slice';
 
@@ -21,12 +22,12 @@ export const fetchTodos = createAsyncThunk(
   'todos/fetchTodos',
   async (payload, { getState, dispatch }): Promise<any> => {
     try {
-      const client = new APIClient();
+      const client = new ApiClient();
 
       const response = await client.get('todos');
 
       if (!response) {
-        throw new Error('No response from server');
+        throw new CustomError('No response from server');
       }
 
       return response;
@@ -52,11 +53,13 @@ export function TodoActions(builder: ActionReducerMapBuilder<ITodoState>) {
     .addCase(fetchTodos.pending, (state, action) => {
       state.status = RequestStatus.Pending;
       state.allTodos = [];
+      state.error = null;
     })
     /** Reducer for when the fetchTodos action is fulfilled. */
     .addCase(fetchTodos.fulfilled, (state, action) => {
       state.status = RequestStatus.Success;
       state.allTodos = action.payload || [];
+      state.error = null;
     })
     /** Reducer for when the fetchTodos action is rejected. */
     .addCase(fetchTodos.rejected, (state, action) => {
