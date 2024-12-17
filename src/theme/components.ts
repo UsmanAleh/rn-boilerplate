@@ -16,6 +16,13 @@ export default ({ backgrounds, fonts, layout }: ComponentTheme) => {
       height: 64,
       width: 64,
     },
+    buttonRounded: {
+      ...layout.justifyCenter,
+      ...layout.itemsCenter,
+      ...backgrounds.purple100,
+      ...fonts.gray400,
+      borderRadius: 8,
+    },
     circle250: {
       borderRadius: 140,
       height: 250,

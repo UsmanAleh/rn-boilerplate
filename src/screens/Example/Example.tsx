@@ -1,9 +1,16 @@
+import { useEffect } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
+import { useWallet } from '@/hooks/useWallet';
 
 import { AssetByVariant, Skeleton } from '@/components/atoms';
 import { SafeScreen } from '@/components/templates';
+
+import RequestStatus from '@/enums/RequestStatus.enum';
+import AppLogger from '@/helpers/AppLogger';
+import { fetchTodos } from '@/store/Todos/Todo.actions';
+import { useAppDispatch, useAppSelector } from '@/store/utils';
 
 function Example() {
   const {
@@ -16,12 +23,32 @@ function Example() {
     variant,
   } = useTheme();
 
-  const onChangeTheme = () => {
-    changeTheme(variant === 'default' ? 'dark' : 'default');
+  const { connect, disconnect } = useWallet();
+
+  const { allTodos, error, status } = useAppSelector((state) => state.todos);
+
+  useEffect(() => {
+    if (status === RequestStatus.Success) {
+      AppLogger.log('Todos:', allTodos);
+    } else if (status === RequestStatus.Error) {
+      AppLogger.error('Error', error);
+    } else {
+      AppLogger.info('Status', status);
+    }
+  }, [allTodos, status, error]);
+
+  const action1 = () => {
+    // dispatch(fetchTodos());
+    connect();
+  };
+
+  const action2 = () => {
+    // changeTheme(variant === 'default' ? 'dark' : 'default');
+    disconnect();
   };
 
   return (
-    <SafeScreen isError={false} onResetError={() => { }}>
+    <SafeScreen isError={false} onResetError={() => {}}>
       <ScrollView>
         <View
           style={[
@@ -52,9 +79,7 @@ function Example() {
               style={[fonts.size_16, fonts.gray200, gutters.marginBottom_40]}
             >
               Do you want to discover some features? Just click on one of the
-              three buttons at the bottom of the screen. The first allows you to
-              call a REST API. The second lets you change the theme color. And
-              the third allows you to change the language.
+              buttons at the bottom of the screen.
             </Text>
           </View>
 
@@ -66,47 +91,29 @@ function Example() {
               gutters.marginTop_16,
             ]}
           >
-            <Skeleton
-              height={64}
-              loading={false}
-              style={{ borderRadius: components.buttonCircle.borderRadius }}
-              width={64}
-            >
-              <TouchableOpacity
-                onPress={() => { }}
-                style={[components.buttonCircle, gutters.marginBottom_16]}
-                testID="fetch-user-button"
-              >
-                <AssetByVariant
-                  path={'tom'}
-                  style={{ height: 24, width: 24 }}
-                />
-              </TouchableOpacity>
-            </Skeleton>
-
             <TouchableOpacity
-              onPress={onChangeTheme}
-              style={[components.buttonCircle, gutters.marginBottom_16]}
-              testID="change-theme-button"
+              onPress={action1}
+              style={[
+                components.buttonRounded,
+                gutters.marginBottom_16,
+                gutters.padding_12,
+              ]}
+              testID="action-button-1"
             >
-              <AssetByVariant
-                path={'tom'}
-                resizeMode={'contain'}
-                style={{ height: 24, width: 24 }}
-              />
+              <Text>Connect Wallet</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
-              onPress={toggleLanguage}
-              style={[components.buttonCircle, gutters.marginBottom_16]}
-              testID="change-language-button"
+            <TouchableOpacity
+              onPress={action2}
+              style={[
+                components.buttonRounded,
+                gutters.marginBottom_16,
+                gutters.padding_12,
+              ]}
+              testID="action-button-2"
             >
-              <AssetByVariant
-                path={'tom'}
-                resizeMode={'contain'}
-                style={{ height: 24, width: 24 }}
-              />
-            </TouchableOpacity> */}
+              <Text>Disconnect Wallet</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

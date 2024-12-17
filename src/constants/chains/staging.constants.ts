@@ -1,3 +1,5 @@
+import { CHAIN_NAMESPACES } from '@web3auth/base';
+
 import { IContracts } from '@/enums/Contracts.enum';
 import {
   ConfigListByChainID,
@@ -32,13 +34,16 @@ const Addresses: ContractListByChainID<ChainID> = {
  */
 const ChainConfig: ConfigListByChainID<ChainID> = {
   [ChainID.ForkedMainnet]: {
-    name: '',
     contract: Addresses[ChainID.ForkedMainnet],
     metadata: {
-      symbol: '',
-      chainId: ChainID.ForkedMainnet,
-      rpcUrl: '',
-      explorerUrl: '',
+      logo: '',
+      ticker: '',
+      chainId: '0x...',
+      rpcTarget: '',
+      tickerName: '',
+      displayName: '',
+      blockExplorerUrl: '',
+      chainNamespace: CHAIN_NAMESPACES.EIP155,
     },
   },
 };

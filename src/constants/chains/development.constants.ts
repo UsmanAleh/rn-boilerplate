@@ -1,3 +1,5 @@
+import { CHAIN_NAMESPACES } from '@web3auth/base';
+
 import { IContracts } from '@/enums/Contracts.enum';
 import type {
   ConfigListByChainID,
@@ -34,10 +36,14 @@ const ChainConfig: ConfigListByChainID<ChainID> = {
   [ChainID.ArbitrumSepolia]: {
     contract: Addresses[ChainID.ArbitrumSepolia],
     metadata: {
-      chainId: ChainID.ArbitrumSepolia,
-      explorerUrl: 'https://sepolia.arbiscan.io',
-      rpcUrl: 'https://sepolia-rollup.arbitrum.io/rpc',
-      symbol: 'ETH',
+      logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
+      ticker: 'ETH',
+      chainId: '0x66eee',
+      rpcTarget: 'https://sepolia-rollup.arbitrum.io/rpc',
+      tickerName: 'Ethereum',
+      displayName: 'Arbitrum Sepolia',
+      blockExplorerUrl: 'https://sepolia.arbiscan.io',
+      chainNamespace: CHAIN_NAMESPACES.EIP155,
     },
     name: 'Arbitrum Sepolia',
   },
