@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import type {
   FulfilledThemeConfiguration,
+  UnionConfiguration,
   Variant,
 } from '@/theme/types/config';
 import type { ComponentTheme, Theme } from '@/theme/types/theme';
@@ -35,6 +36,8 @@ import layout from '@/theme/layout';
 import generateConfig from '@/theme/ThemeProvider/generateConfig';
 
 import AsyncStorageKeys from '@/enums/AsyncStorage.enum';
+import AppLogger from '@/helpers/AppLogger';
+import { fetchUserTheme } from '@/helpers/themeHelper';
 
 type Context = {
   changeTheme: (variant: Variant) => void;
@@ -47,22 +50,27 @@ function ThemeProvider({ children = false }: PropsWithChildren) {
 
   // Current theme variant
   const [variant, setVariant] = useState<Variant>('default');
+  const [mergedConfig, setMergedConfig] =
+    useState<UnionConfiguration>();
+    // useState<FulfilledThemeConfiguration>();
 
   // Initialize theme at default if not defined
   useEffect(() => {
-    async function initalizeTheme() {
-      let config = await getItem();
+    async function initializeTheme() {
+      const config = await getItem();
       if (!config) {
         await setItem('default');
         setVariant('default');
       }
     }
-    initalizeTheme();
+    initializeTheme();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeTheme = useCallback(async (nextVariant: Variant) => {
     setVariant(nextVariant);
     await setItem(nextVariant);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Flatten config with current variant
@@ -70,13 +78,14 @@ function ThemeProvider({ children = false }: PropsWithChildren) {
     return generateConfig(variant) satisfies FulfilledThemeConfiguration;
   }, [variant]);
 
-  const fonts = useMemo(() => {
+   const fonts = useMemo(() => {
     return {
       ...generateFontSizes(),
       ...generateFontColors(fullConfig),
+      ...(mergedConfig ? generateFontColors(mergedConfig) : {}),
       ...staticFontStyles,
     };
-  }, [fullConfig]);
+  }, [fullConfig, mergedConfig]);
 
   const backgrounds = useMemo(() => {
     return {
@@ -91,6 +100,13 @@ function ThemeProvider({ children = false }: PropsWithChildren) {
       ...staticGutterStyles,
     };
   }, [fullConfig]);
+
+  const branding = useMemo(() => {
+    return {
+      ...fullConfig.branding,
+      ...mergedConfig?.branding,
+    };
+  }, [fullConfig, mergedConfig]);
 
   const borders = useMemo(() => {
     return {
@@ -108,17 +124,46 @@ function ThemeProvider({ children = false }: PropsWithChildren) {
     };
   }, [variant, fullConfig.navigationColors]);
 
+  const fetchUserThemeAndUpdate = useCallback(
+    async (userId: string) => {
+      try {
+        const userTheme = await fetchUserTheme(userId);
+        if (userTheme) {
+          const mergedUserTheme = generateConfig('custom', userTheme);
+          setMergedConfig(mergedUserTheme);
+          changeTheme('custom');
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        AppLogger.error('Error fetching and applying user theme:', error);
+      }
+    },
+    [changeTheme],
+  );
+
   const theme = useMemo(() => {
     return {
       backgrounds,
       borders,
-      colors: fullConfig.colors,
-      fonts,
+      branding,
+      colors: { ...fullConfig.colors, ...mergedConfig?.fonts },
+      fetchUserThemeAndUpdate,
+      fonts: { ...fonts, ...mergedConfig?.fonts },
       gutters,
       layout,
       variant,
     } satisfies ComponentTheme;
-  }, [variant, fonts, backgrounds, borders, fullConfig.colors, gutters]);
+  }, [
+    backgrounds,
+    borders,
+    branding,
+    fullConfig.colors,
+    fonts,
+    gutters,
+    variant,
+    mergedConfig,
+    fetchUserThemeAndUpdate,
+  ]);
 
   const components = useMemo(() => {
     return componentsGenerator(theme);

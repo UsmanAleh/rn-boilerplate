@@ -1,5 +1,6 @@
 import type { Backgrounds } from './backgrounds';
 import type { Borders } from './borders';
+import type { Branding } from './branding';
 import type { Variant } from './config';
 import type { Fonts } from './fonts';
 import type { Gutters } from './gutters';
@@ -11,8 +12,10 @@ import type { Colors } from '@/theme/types/colors';
 export type Theme = {
   backgrounds: Backgrounds;
   borders: Borders;
+  branding: Branding;
   colors: Colors;
   components: ReturnType<typeof componentGenerators>;
+  fetchUserThemeAndUpdate: (userId: string) => void;
   fonts: Fonts;
   gutters: Gutters;
   layout: typeof layout;

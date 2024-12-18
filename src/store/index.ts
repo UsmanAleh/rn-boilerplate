@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { PersistConfig, persistReducer, persistStore } from 'redux-persist';
+import type { PersistConfig} from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist';
 import { encryptTransform } from 'redux-persist-transform-encrypt';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
