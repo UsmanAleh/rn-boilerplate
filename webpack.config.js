@@ -2,7 +2,7 @@ const path = require('node:path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const appDirectory = path.resolve(__dirname);
-const { presets, plugins } = require(`${appDirectory}/babel.config.js`);
+const { plugins, presets } = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
   // Add every react-native package that needs compiling
   // 'react-native-gesture-handler',
@@ -15,6 +15,10 @@ const babelLoaderConfiguration = {
   test: /\.(js|jsx|ts|tsx)$/, // Updated to include .jsx
   // Add every directory that needs to be compiled by Babel during the build.
   include: [
+    // path.resolve(
+    //   appDirectory,
+    //   'node_modules/@react-native/assets-registry/registry',
+    // ),
     path.resolve(__dirname, 'index.web.js'), // Entry to your application
     path.resolve(__dirname, 'src/App.tsx'), // Updated to .jsx
     path.resolve(__dirname, 'src'),
@@ -25,8 +29,8 @@ const babelLoaderConfiguration = {
     loader: 'babel-loader',
     options: {
       cacheDirectory: true,
-      presets,
       plugins,
+      presets,
     },
   },
 };
@@ -51,8 +55,8 @@ const imageLoaderConfiguration = {
 };
 
 const tsLoaderConfiguration = {
-  test: /\.(ts)x?$/,
   exclude: /node_modules|\.d\.ts$/, // this line as well
+  test: /\.(ts)x?$/,
   use: {
     loader: 'ts-loader',
     options: {
@@ -62,6 +66,15 @@ const tsLoaderConfiguration = {
     },
   },
 };
+
+// const ttfLoaderConfiguration = {
+//   test: /\.ttf$/,
+//   use: [
+//     {
+//       loader: 'url-loader',
+//     },
+//   ],
+// };
 
 const environment = process.env.NODE_ENV || 'development'; // Default to 'development' if not specified
 let envFile = '.env';
@@ -85,44 +98,36 @@ const customEnv = {
 };
 
 module.exports = {
-  mode: mode,
   devtool: environment === 'development' ? 'source-map' : false,
-  performance: {
-    hints: environment === 'development' ? false : 'warning', // Warnings enabled for staging and production
-    maxEntrypointSize: 3000000, // 3 MB
-    maxAssetSize: 2000000, // 2 MB
-  },
   entry: {
     app: path.join(__dirname, 'index.web.js'),
   },
-  output: {
-    path: path.resolve(appDirectory, 'dist'),
-    publicPath: '/',
-    filename: 'rnw.bundle.js',
-  },
-  resolve: {
-    extensions: [
-      '.web.tsx',
-      '.web.ts',
-      '.tsx',
-      '.ts',
-      '.web.js',
-      '.web.jsx',
-      '.js',
-      '.jsx',
-      '.json',
-    ],
-    alias: {
-      'react-native$': 'react-native-web',
-    },
-  },
+  mode,
   module: {
     rules: [
       babelLoaderConfiguration,
       imageLoaderConfiguration,
       svgLoaderConfiguration,
       tsLoaderConfiguration,
+      // ttfLoaderConfiguration,
+      // {
+      //   issuer: {
+      //     and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
+      //   },
+      //   test: /\.svg$/,
+      //   use: ['@svgr/webpack'],
+      // },
     ],
+  },
+  output: {
+    filename: 'rnw.bundle.js',
+    path: path.resolve(appDirectory, 'dist'),
+    publicPath: '/',
+  },
+  performance: {
+    hints: environment === 'development' ? false : 'warning', // Warnings enabled for staging and production
+    maxAssetSize: 2_000_000, // 2 MB
+    maxEntrypointSize: 3_000_000, // 3 MB
   },
   plugins: [
     /**
@@ -145,4 +150,22 @@ module.exports = {
       path: path.resolve(__dirname, envFile),
     }),
   ],
+  resolve: {
+    alias: {
+      'react-native-linear-gradient': 'react-native-web-linear-gradient',
+      'react-native$': 'react-native-web',
+    },
+    extensions: [
+      '.web.tsx',
+      '.web.ts',
+      '.tsx',
+      '.ts',
+      '.web.js',
+      '.web.jsx',
+      '.js',
+      '.jsx',
+      '.json',
+      // '.svg',
+    ],
+  },
 };

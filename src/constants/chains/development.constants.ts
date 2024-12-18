@@ -1,7 +1,7 @@
 import { CHAIN_NAMESPACES } from '@web3auth/base';
 
 import { IContracts } from '@/enums/Contracts.enum';
-import {
+import type {
   ConfigListByChainID,
   ContractListByChainID,
 } from '@/interfaces/chains.interface';
@@ -12,7 +12,7 @@ import {
  * @enum {number}
  */
 enum ChainID {
-  ArbitrumSepolia = 421614,
+  ArbitrumSepolia = 421_614,
   Native = ArbitrumSepolia,
 }
 
@@ -45,6 +45,7 @@ const ChainConfig: ConfigListByChainID<ChainID> = {
       blockExplorerUrl: 'https://sepolia.arbiscan.io',
       chainNamespace: CHAIN_NAMESPACES.EIP155,
     },
+    name: 'Arbitrum Sepolia',
   },
 };
 
