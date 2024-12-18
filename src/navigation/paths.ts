@@ -1,6 +1,6 @@
 export const enum Paths {
   Example = 'Example',
-  PlanSelection = 'Plan Selection',
+  Onboarding = 'Onboarding',
   SignIn = 'SignIn',
   Startup = 'Start Up',
 }

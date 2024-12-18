@@ -1,8 +1,8 @@
-// import CheckBox from '@react-native-community/checkbox';
+import type { RootScreenProps } from '@/navigation/types';
+
 import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
-  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -14,41 +14,46 @@ import { CheckBox } from 'react-native-web';
 
 import { useTheme } from '@/theme';
 import { Paths } from '@/navigation/paths';
-import type { RootScreenProps } from '@/navigation/types';
 
-import { AssetByVariant } from '@/components/atoms';
+import { AssetByVariant, Button, GradientText } from '@/components/atoms';
+import { LogoWithTagline } from '@/components/molecules';
 
-// import Google from '../../theme/assets/icons/apple.svg';
+import AppLogger from '@/helpers/AppLogger';
 
-const GradientText = ({
-  children,
-  size,
+const SocialIcon = ({
+  onPress,
+  path,
+  selectedSocialLoginType,
+  socialType,
 }: {
-  children: string;
-  size: number;
+  onPress: () => void;
+  path: string;
+  selectedSocialLoginType: string;
+  socialType: string;
 }) => {
-  if (Platform.OS === 'web') {
-    const gradientLetters = children
-      .split('')
-      .map((letter: string, index: number) => (
-        <span
-          key={index}
-          style={{
-            background: `-webkit-linear-gradient(top, ${'#9A4DFF'}, ${'#5C2E99'})`,
-            fontFamily: 'sans-serif',
-            fontSize: size,
-            fontWeight: '800',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          {letter}
-        </span>
-      ));
-
-    return <div>{gradientLetters}</div>;
-  }
-  return null;
+  const isSelected = socialType === selectedSocialLoginType;
+  return (
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={onPress}
+      style={styles.iconContainer}
+    >
+      <LinearGradient
+        colors={isSelected ? ['#9A4DFF', '#5C2E99'] : ['#fff', '#fff']}
+        style={{
+          ...styles.gradientButton,
+          height: 58,
+          width: '100%',
+        }}
+      >
+        <AssetByVariant
+          path={path}
+          resizeMode={'contain'}
+          style={{ height: 24, width: 24 }}
+        />
+      </LinearGradient>
+    </TouchableOpacity>
+  );
 };
 
 function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
@@ -57,6 +62,10 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
   const [isSmallScreen, setIsSmallScreen] = useState(
     Dimensions.get('window').width < 783,
   );
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [selectedSocialLoginType, setSelectedSocialLoginType] =
+    useState('Google');
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,11 +80,21 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
     };
   }, []);
 
-  const handleLogin = () => {
-    // eslint-disable-next-line no-console
-    console.log('Login button clicked');
-    navigation.navigate(Paths.PlanSelection);
+  const handleLogin = (socialType: string) => {
+    // Handle login logic based on socialTypeF
+    setSelectedSocialLoginType(socialType);
+    AppLogger.info(`${socialType} login initiated`);
   };
+
+  const handleLegacyEmailLogin = () => {
+    // if (!email || !password) {
+    //   AppLogger.warn('Email and password are required');
+    //   return;
+    // }
+    // AppLogger.info('Login button clicked with:', { email, password });
+    navigation.navigate(Paths.Onboarding);
+  };
+
   return (
     <View style={styles.container}>
       {/* Left Section */}
@@ -85,25 +104,10 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
           style={styles.leftSection}
         >
           <View style={styles.leftContent}>
-            <AssetByVariant
-              path={'loot8logo'}
-              resizeMode={'contain'}
-              style={{ height: 56, width: 222 }}
+            <LogoWithTagline
+              logoStyle={{ height: 56, width: 222 }}
+              taglineStyle={styles.tagline}
             />
-             {/* <svg
-              className="bi bi-google"
-              fill="currentColor"
-              height="36"
-              viewBox="0 0 36 36"
-              width="36"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M20.6576 28.2105C19.0596 29.7217 17.3148 29.4831 15.6353 28.7673C13.8579 28.0356 12.2273 28.0037 10.352 28.7673C8.00395 29.7535 6.76468 29.4672 5.36234 28.2105C-2.59511 20.2091 -1.42106 8.02412 7.6126 7.57872C9.81394 7.69007 11.3467 8.75586 12.6349 8.85131C14.5591 8.46953 16.4017 7.37192 18.4563 7.51509C20.9185 7.70598 22.7774 8.66042 24.0004 10.3784C18.9128 13.3531 20.1195 19.891 24.7831 21.7203C23.8536 24.1064 22.647 26.4766 20.6413 28.2264L20.6576 28.2105ZM12.4719 7.48328C12.2273 3.93594 15.1787 1.00899 18.5704 0.722656C19.0433 4.82675 14.7547 7.88096 12.4719 7.48328Z"
-                fill="#6B7280"
-              />
-            </svg> */}
-            <Text style={styles.tagline}>Secure, Verified, Connected</Text>
 
             <View style={styles.features}>
               <View style={styles.featureItem}>
@@ -163,13 +167,7 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
           <AssetByVariant
             path={'signInArt'}
             resizeMode={'contain'}
-            style={{
-              bottom: 0,
-              height: 240,
-              left: 0,
-              position: 'absolute',
-              width: 290,
-            }}
+            style={styles.signInArt}
           />
         </LinearGradient>
       )}
@@ -178,19 +176,14 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
       <View style={styles.rightSection}>
         {isSmallScreen && (
           <View style={{ marginBottom: 20 }}>
-            <AssetByVariant
-              path={'loot8logo-dark'}
-              resizeMode={'contain'}
-              style={{ height: 56, width: 222 }}
-            />
-            <Text
-              style={{
+            <LogoWithTagline
+              logoPath="loot8logo-dark"
+              logoStyle={{ height: 56, width: 222 }}
+              taglineStyle={{
                 ...styles.tagline,
                 color: '#111111',
               }}
-            >
-              Secure, Verified, Connected
-            </Text>
+            />
           </View>
         )}
 
@@ -199,30 +192,29 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
         </View>
         {/* Input Fields */}
         <TextInput
+          onChangeText={setEmail}
           placeholder="Email Address"
           placeholderTextColor="#A1A1A1"
           style={styles.textInput}
+          value={email}
         />
         <TextInput
+          onChangeText={setPassword}
           placeholder="Password"
           placeholderTextColor="#A1A1A1"
           secureTextEntry
           style={styles.textInput}
+          value={password}
         />
 
         {/* Login Button */}
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={handleLogin}
-          style={styles.loginButton}
-        >
-          <LinearGradient
-            colors={['#9A4DFF', '#5C2E99']}
-            style={{ ...styles.gradientButton, borderRadius: 30 }}
-          >
-            <Text style={styles.loginText}>Login</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <Button
+          buttonStyle={{ ...styles.gradientButton, marginVertical: 10 }}
+          buttonText="Login"
+          buttonWidth={'96%'}
+          isGradientButton
+          onPress={handleLegacyEmailLogin}
+        />
 
         {/* Remember Me / Forgot Password */}
         <View style={styles.row}>
@@ -238,23 +230,12 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
           <Text style={styles.forgotPassword}>Forgot Password</Text>
         </View>
 
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            marginVertical: 30,
-            width: '76%',
-          }}
-        >
-          <View
-            style={{ backgroundColor: '#00000020', height: 1, width: '45%' }}
-          />
+        <View style={styles.linesWrap}>
+          <View style={styles.line} />
           <Text style={{ ...styles.signInSocialText, marginBottom: 0 }}>
             OR
           </Text>
-          <View
-            style={{ backgroundColor: '#00000020', height: 1, width: '45%' }}
-          />
+          <View style={styles.line} />
         </View>
 
         {/* Social Login */}
@@ -264,73 +245,24 @@ function SignIn({ navigation }: RootScreenProps<Paths.SignIn>) {
 
         {/* Social Icons */}
         <View style={styles.socialIcons}>
-          <TouchableOpacity style={styles.iconContainer}>
-            {/* <Google height={50} width={50} /> */}
-            <LinearGradient
-              colors={['#9A4DFF', '#5C2E99']}
-              style={{
-                ...styles.gradientButton,
-                height: 62,
-                justifyContent: 'center',
-                width: '100%',
-              }}
-            >
-              <AssetByVariant
-                path={'social-icons/google'}
-                resizeMode={'contain'}
-                style={{ height: 24, width: 24 }}
-              />
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconContainer}>
-            <AssetByVariant
-              path={'social-icons/discord'}
-              resizeMode={'contain'}
-              style={{ height: 24, width: 24 }}
+          {[
+            { path: 'social-icons/google', socialType: 'Google' },
+            { path: 'social-icons/discord', socialType: 'Discord' },
+            { path: 'social-icons/fb', socialType: 'Facebook' },
+            { path: 'social-icons/x', socialType: 'Twitter' },
+            { path: 'social-icons/apple', socialType: 'Apple' },
+            { path: 'social-icons/github', socialType: 'GitHub' },
+            { path: 'social-icons/linkedin', socialType: 'LinkedIn' },
+            { path: 'social-icons/twitch', socialType: 'Twitch' },
+          ].map(({ path, socialType }) => (
+            <SocialIcon
+              key={path}
+              onPress={() => handleLogin(socialType)}
+              path={path}
+              selectedSocialLoginType={selectedSocialLoginType}
+              socialType={socialType}
             />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconContainer}>
-            <AssetByVariant
-              path={'social-icons/fb'}
-              resizeMode={'contain'}
-              style={{ height: 24, width: 24 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconContainer}>
-            <AssetByVariant
-              path={'social-icons/x'}
-              resizeMode={'contain'}
-              style={{ height: 24, width: 24 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconContainer}>
-            <AssetByVariant
-              path={'social-icons/apple'}
-              resizeMode={'contain'}
-              style={{ height: 24, width: 24 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconContainer}>
-            <AssetByVariant
-              path={'social-icons/github'}
-              resizeMode={'contain'}
-              style={{ height: 24, width: 24 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconContainer}>
-            <AssetByVariant
-              path={'social-icons/linkedin'}
-              resizeMode={'contain'}
-              style={{ height: 24, width: 24 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconContainer}>
-            <AssetByVariant
-              path={'social-icons/twitch'}
-              resizeMode={'contain'}
-              style={{ height: 24, width: 24 }}
-            />
-          </TouchableOpacity>
+          ))}
         </View>
       </View>
     </View>
@@ -380,7 +312,7 @@ const styles = StyleSheet.create({
   },
   gradientButton: {
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 5,
     height: 50,
     justifyContent: 'center',
   },
@@ -389,7 +321,7 @@ const styles = StyleSheet.create({
     borderColor: '#9A4DFF',
     borderRadius: 8,
     borderWidth: 2.6,
-    height: 62,
+    // height: 62,
     justifyContent: 'center',
     marginBottom: 14,
     marginHorizontal: 10,
@@ -405,21 +337,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 30,
   },
-  loginButton: {
-    borderRadius: 30,
-    height: 54,
-    marginVertical: 10,
+  line: { backgroundColor: '#00000020', height: 1, width: '45%' },
+  linesWrap: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: 30,
     width: '76%',
-  },
-  loginText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  logoText: {
-    color: 'white',
-    fontSize: 36,
-    fontWeight: 'bold',
   },
   rememberMe: {
     color: '#333333',
@@ -438,17 +361,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '76%',
   },
+  signInArt: {
+    bottom: 0,
+    height: 240,
+    left: 0,
+    position: 'absolute',
+    width: 290,
+  },
   signInSocialText: {
     color: '#A1A1A1',
     fontSize: 14,
     marginBottom: 30,
     marginHorizontal: 10,
-  },
-  signInTitle: {
-    color: '#333333',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
   socialIcons: {
     flexDirection: 'row',
