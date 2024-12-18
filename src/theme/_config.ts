@@ -1,4 +1,7 @@
-import type { ThemeConfiguration } from '@/theme/types/config';
+import type {
+  BrandingConfiguration,
+  ThemeConfiguration,
+} from '@/theme/types/config';
 
 import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 
@@ -38,7 +41,7 @@ const colorsDark = {
 const sizes = [12, 16, 24, 32, 40, 80] as const;
 
 // Define branding configurations for light and dark themes.
-const brandingLight = {
+const brandingLight: BrandingConfiguration = {
   // fontFamily: 'Roboto-Regular',
   logo: require('@/theme/assets/images/tom.png'),
   textLogo: 'DEFAULT USER THEME',
@@ -46,7 +49,7 @@ const brandingLight = {
   // secondaryColor: colorsLight.purple500,
 } as const;
 
-const brandingDark = {
+const brandingDark: BrandingConfiguration = {
   // fontFamily: 'Roboto-Bold',
   logo: require('@/theme/assets/images/dark/tom.png'),
   textLogo: 'DEFAULT USER DARK THEME',
@@ -112,30 +115,3 @@ export const config = {
     },
   },
 } as const satisfies ThemeConfiguration;
-
-// Function to merge user preferences with default
-export const mergeTheme = async (
-  userPreferences: Partial<ThemeConfiguration>,
-): Promise<ThemeConfiguration> => {
-  const mergedTheme = {
-    ...config,
-    ...userPreferences,
-    backgrounds: {
-      ...config.backgrounds,
-      ...(userPreferences.backgrounds || {}),
-    },
-    branding: {
-      ...config.branding,
-      ...(userPreferences.branding || {}),
-    },
-    colors: {
-      ...config.colors,
-      ...(userPreferences.colors || {}),
-    },
-    fonts: {
-      ...config.fonts,
-      colors: userPreferences?.fonts?.colors || {},
-    },
-  };
-  return mergedTheme;
-};

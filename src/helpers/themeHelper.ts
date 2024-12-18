@@ -1,81 +1,106 @@
-/* eslint-disable unicorn/prefer-number-properties */
-import type { ThemeConfiguration } from '@/theme/types/config';
+import type {
+  FulfilledThemeConfiguration,
+  MergedTheme,
+  ThemeConfiguration,
+} from '@/theme/types/config';
 
-import { config, mergeTheme } from '@/theme/_config';
+import { config } from '@/theme/_config';
+
+import AppLogger from '@/helpers/AppLogger';
 
 // Mocked API data for user-specific themes
-const mockUserThemes = {
+const mockUserThemes: Record<number, FulfilledThemeConfiguration> = {
   1: {
     backgrounds: {
       primary: '#F0F0F0',
       secondary: '#DADADA',
     },
+    borders: config.borders,
     branding: {
       logo: 'https://dummyimage.com/300x100/000/fff&text=User+1+Logo',
       textLogo: 'USER ONE (1)',
     },
+    colors: config.colors,
     fonts: {
       colors: {
-        gray100: '#FFFFFF',
+        gradientColorOne: 'red',
+        gradientColorTwo: 'blue',
         primaryColor: 'red',
-        purple500: '#FF5733',
-        red500: '#FF0000',
+        secondaryColor: 'blue',
       },
+      sizes: [12, 16, 24, 32, 40, 80],
     },
+    gutters: config.gutters,
+    navigationColors: config.navigationColors,
   },
   2: {
     backgrounds: {
       primary: '#E8E8E8',
       secondary: '#C2C2C2',
     },
+    borders: config.borders,
     branding: {
       logo: 'https://dummyimage.com/300x100/000/fff&text=User+2+Logo',
       textLogo: 'USER TWO (2)',
     },
+    colors: config.colors,
     fonts: {
       colors: {
-        gray200: '#CCCCCC',
-        primaryColor: 'pink',
-        purple100: '#123456',
-        skeleton: '#666666',
+        gradientColorOne: '#CCCCCC',
+        gradientColorTwo: '#123456',
+        primaryColor: 'CCCCCC',
+        secondaryColor: '666666',
       },
+      sizes: [12, 16, 24, 32, 40, 80],
     },
+    gutters: config.gutters,
+    navigationColors: config.navigationColors,
   },
   3: {
     backgrounds: {
       primary: '#FFF8E1',
       secondary: '#FFD180',
     },
+    borders: config.borders,
     branding: {
       logo: 'https://dummyimage.com/300x100/000/fff&text=User+3+Logo',
       textLogo: 'USER THREE (3)',
     },
+    colors: config.colors,
     fonts: {
       colors: {
-        gray400: '#FAFAFA',
-        primaryColor: 'green',
-        purple50: '#654321',
-        purple500: '#AA00AA',
+        gradientColorOne: '#FAFAFA',
+        gradientColorTwo: '#654321',
+        primaryColor: 'AA00AA',
+        secondaryColor: '654321',
       },
+      sizes: [12, 16, 24, 32, 40, 80],
     },
+    gutters: config.gutters,
+    navigationColors: config.navigationColors,
   },
   4: {
     backgrounds: {
       primary: '#303030',
       secondary: '#424242',
     },
+    borders: config.borders,
     branding: {
       logo: 'https://dummyimage.com/300x100/000/fff&text=User+4+Logo',
       textLogo: 'USER THREE (4)',
     },
+    colors: config.colors,
     fonts: {
       colors: {
-        gray800: '#121212',
-        primaryColor: 'blue',
-        purple100: '#009688',
-        red500: '#FF5722',
+        gradientColorOne: '#121212',
+        gradientColorTwo: '#009688',
+        primaryColor: '009688',
+        secondaryColor: 'FF5722',
       },
+      sizes: [12, 16, 24, 32, 40, 80],
     },
+    gutters: config.gutters,
+    navigationColors: config.navigationColors,
   },
 };
 
@@ -84,11 +109,17 @@ const mockUserThemes = {
  * @param userId - The ID of the user whose theme preferences are being fetched.
  * @returns A Promise resolving to the user-specific theme preferences.
  */
-const mockApiCall = (userId: string): Promise<Record<string, string>> => {
+const mockApiCall = (userId: string): Promise<FulfilledThemeConfiguration> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // @ts-ignore
-      resolve(mockUserThemes[parseInt(userId, 10)] || {});
+      const parsedUserId = Number.parseInt(userId, 10);
+      resolve(
+        mockUserThemes[parsedUserId] || {
+          backgrounds: { primary: '', secondary: '' },
+          branding: { logo: '', textLogo: '' },
+          fonts: { colors: {}, sizes: [] },
+        },
+      );
     }, 500); // Simulate a 500ms network delay
   });
 };
@@ -105,7 +136,7 @@ export const fetchUserTheme = async (
     // const response = await fetch(`https://api.example.com/themes/${userId}`);
 
     // if (!response.ok) {
-    //   throw new Error(
+    //   throw new CustomError(
     //     `Failed to fetch theme: ${response.status} ${response.statusText}`,
     //   );
     // }
@@ -121,7 +152,38 @@ export const fetchUserTheme = async (
     return mergeTheme(userPreferences);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Error fetching user theme:', error);
+    AppLogger.error('Error fetching user theme:', error);
     return config; // Fallback to default
   }
+};
+
+// Function to merge user preferences with default
+export const mergeTheme = async (
+  userPreferences: Partial<ThemeConfiguration>,
+): Promise<MergedTheme> => {
+  const { backgrounds = {}, branding = {}, colors = {} } = userPreferences;
+
+  const mergedTheme: MergedTheme = {
+    ...config,
+    backgrounds: {
+      ...config.backgrounds,
+      ...backgrounds,
+    },
+    branding: {
+      ...config.branding,
+      ...branding,
+    },
+    colors: {
+      ...config.colors,
+      ...colors,
+    },
+    fonts: {
+      ...config.fonts,
+      colors: {
+        ...userPreferences?.fonts?.colors,
+      },
+      sizes: config.fonts.sizes,
+    },
+  };
+  return mergedTheme;
 };

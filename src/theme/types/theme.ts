@@ -15,7 +15,6 @@ export type Theme = {
   branding: Branding;
   colors: Colors;
   components: ReturnType<typeof componentGenerators>;
-  // eslint-disable-next-line no-unused-vars
   fetchUserThemeAndUpdate: (userId: string) => void;
   fonts: Fonts;
   gutters: Gutters;

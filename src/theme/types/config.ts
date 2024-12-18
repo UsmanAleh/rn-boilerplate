@@ -10,7 +10,7 @@ export type ThemeState = {
 };
 
 export interface BrandingConfiguration {
-  logo?: string | undefined;
+  logo?: string;
   textLogo?: string | undefined;
 }
 
@@ -51,3 +51,15 @@ export type ThemeConfiguration = {
 } & FulfilledThemeConfiguration;
 
 export type UnionConfiguration = ReturnType<typeof generateConfig>;
+
+export interface MergedTheme extends ThemeConfiguration {
+  backgrounds: Record<string, string>;
+  branding: BrandingConfiguration;
+  colors: Record<string, string>;
+  fonts: {
+    colors: {
+      [key: string]: string;
+    };
+    sizes: readonly number[];
+  };
+}

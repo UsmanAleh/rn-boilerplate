@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import type {
   FulfilledThemeConfiguration,
+  UnionConfiguration,
   Variant,
 } from '@/theme/types/config';
 import type { ComponentTheme, Theme } from '@/theme/types/theme';
@@ -34,11 +35,11 @@ import { generateGutters, staticGutterStyles } from '@/theme/gutters';
 import layout from '@/theme/layout';
 import generateConfig from '@/theme/ThemeProvider/generateConfig';
 
-import AsyncStorageKeys from '@/enums/asyncStorage.enum';
+import AsyncStorageKeys from '@/enums/AsyncStorage.enum';
+import AppLogger from '@/helpers/AppLogger';
 import { fetchUserTheme } from '@/helpers/themeHelper';
 
 type Context = {
-  // eslint-disable-next-line no-unused-vars
   changeTheme: (variant: Variant) => void;
 } & Theme;
 
@@ -50,7 +51,8 @@ function ThemeProvider({ children = false }: PropsWithChildren) {
   // Current theme variant
   const [variant, setVariant] = useState<Variant>('default');
   const [mergedConfig, setMergedConfig] =
-    useState<FulfilledThemeConfiguration>();
+    useState<UnionConfiguration>();
+    // useState<FulfilledThemeConfiguration>();
 
   // Initialize theme at default if not defined
   useEffect(() => {
@@ -76,11 +78,10 @@ function ThemeProvider({ children = false }: PropsWithChildren) {
     return generateConfig(variant) satisfies FulfilledThemeConfiguration;
   }, [variant]);
 
-  const fonts = useMemo(() => {
+   const fonts = useMemo(() => {
     return {
       ...generateFontSizes(),
       ...generateFontColors(fullConfig),
-      // @ts-ignore
       ...(mergedConfig ? generateFontColors(mergedConfig) : {}),
       ...staticFontStyles,
     };
@@ -134,7 +135,7 @@ function ThemeProvider({ children = false }: PropsWithChildren) {
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Error fetching and applying user theme:', error);
+        AppLogger.error('Error fetching and applying user theme:', error);
       }
     },
     [changeTheme],
